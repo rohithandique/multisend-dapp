@@ -1,25 +1,27 @@
 import React from "react";
+import ToggleTheme from "utils/ToggleTheme";
 
 import {
   chakra, Box, Flex, useColorModeValue, VisuallyHidden,
   HStack, Button, useDisclosure, VStack,
   IconButton, CloseButton, Image
 } from "@chakra-ui/react";
+
 import { HamburgerIcon} from "@chakra-ui/icons"
 import Logo from "assets/logo.png";
+import LoginButton from "./LoginButton";
 
 export default function Navbar() {
-  const bg = useColorModeValue("white", "gray.800");
+  const bg = useColorModeValue("#E5E5E5", "gray.800");
   const mobileNav = useDisclosure();
 
   return (
-    <React.Fragment>
+    <React.Fragment >
       <chakra.header
         bg={bg}
         w="full"
         px={{ base: 2, sm: 4 }}
         py={4}
-        shadow="md"
       >
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Flex>
@@ -43,15 +45,10 @@ export default function Navbar() {
               color="brand.500"
               display={{ base: "none", md: "inline-flex" }}
             >
-              <Button variant="ghost">Features</Button>
-              <Button variant="ghost">Pricing</Button>
-              <Button variant="ghost">Blog</Button>
-              <Button variant="ghost">Company</Button>
-              <Button variant="ghost">Sign in</Button>
+              <Button variant="ghost">Todo</Button>
+              <ToggleTheme />
             </HStack>
-            <Button colorScheme="blue" size="md">
-              Get Started
-            </Button>
+            <LoginButton />
             <Box display={{ base: "inline-flex", md: "none" }}>
               <IconButton
                 display={{ base: "flex", md: "none" }}
@@ -84,20 +81,9 @@ export default function Navbar() {
                 />
 
                 <Button w="full" variant="ghost">
-                  Features
+                  Todo
                 </Button>
-                <Button w="full" variant="ghost">
-                  Pricing
-                </Button>
-                <Button w="full" variant="ghost">
-                  Blog
-                </Button>
-                <Button w="full" variant="ghost">
-                  Company
-                </Button>
-                <Button w="full" variant="ghost">
-                  Sign in
-                </Button>
+                <ToggleTheme />
               </VStack>
             </Box>
           </HStack>
