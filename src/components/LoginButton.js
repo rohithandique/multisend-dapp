@@ -55,7 +55,11 @@ export default function LoginButton() {
           <>
           { currentAccount ? 
           <Button bg={bg}>
-            <Image src={currentNetwork === 56 || currentNetwork === 97 ? BNBLogo : ETHLogo} h="15px" mr="2"/>
+            <Image src={
+              currentNetwork === 56 || currentNetwork === 97 ? BNBLogo 
+              :  
+              currentNetwork === 1 || currentNetwork === 3 || currentNetwork === 4 || currentNetwork === 5 || currentNetwork === 42
+              ? ETHLogo : ""} h="15px" mr="2"/>
             {currentAccount.substring(0, 5)+"...."+currentAccount.substring(currentAccount.length-6)}
           </Button>
           /*

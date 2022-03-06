@@ -1,8 +1,12 @@
 import React from 'react'
+import Amounts from './FormTabs/Amounts';
+import Addresses from './FormTabs/Addresses';
+import Token from './FormTabs/Token';
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Center, Box, useColorModeValue, 
     Button 
 } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
+
 
 export default function MainTabs() {
 
@@ -11,22 +15,25 @@ export default function MainTabs() {
 
     return (
     <Center bg={bg} h="90vh">
-        <Box pb="4" rounded="xl" shadow="lg" bg={useColorModeValue("white", "gray.700")}>
-            <Tabs variant='unstyled' >
-            <TabList m={5} p={2} bg="brand.300" rounded="xl">
-                <Tab ml={1} _selected={{ color: 'white', bg: 'brand.200' }} rounded="lg">
+        <Box px="2" pb="4" rounded="xl" shadow="lg" bg={useColorModeValue("white", "gray.700")} w={{base:'90vw', md:"60vw"}}>
+            <Tabs isFitted variant='unstyled' >
+            <TabList mx={4} mt="8" p={2} bg="brand.300" rounded="xl" w={{base:"92.5%", md:"60%"}} color="black">
+                <Tab _selected={{ color: 'black', bg: 'brand.200' }} rounded="lg">
                     Send BNB
                 </Tab>
-                <Tab mr={1} _selected={{ color: 'white', bg: 'brand.200' }} rounded="lg">
+                <Tab _selected={{ color: 'black', bg: 'brand.200' }} rounded="lg">
                     Send Tokens
                 </Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>
-                <p>one!</p>
+                    <Amounts />
+                    <Addresses />
                 </TabPanel>
                 <TabPanel>
-                <p>two!</p>
+                    <Token />
+                    <Amounts />
+                    <Addresses />
                 </TabPanel>
             </TabPanels>
             </Tabs>
