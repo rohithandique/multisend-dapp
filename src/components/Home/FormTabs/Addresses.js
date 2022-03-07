@@ -3,13 +3,13 @@ import {
     FormControl, FormLabel, Textarea, Tooltip, Grid, GridItem, Button
 } from '@chakra-ui/react'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { GrDocumentCsv } from "react-icons/gr"
+import { FaFileCsv } from "react-icons/fa"
 import { BsBookmarks } from "react-icons/bs"
 import CSVUpload from './CSVUpload'
 
 export default function Addresses() {
 
-  const [ isUpload, setIsUpload ] = useState(false)
+  const [ isUpload, setIsUpload ] = useState(true)
   return (
     <>
     <FormControl mt="4">
@@ -24,7 +24,7 @@ export default function Addresses() {
         </GridItem>
         <GridItem colSpan={1} display='flex' alignItems='flex-end' justifyContent='flex-end'>
           <Button variant="unstyled" onClick={()=>setIsUpload(!isUpload)} 
-          rightIcon={isUpload ? <GrDocumentCsv /> : <BsBookmarks />}
+          rightIcon={isUpload ? <FaFileCsv /> : <BsBookmarks />}
           _focus={{
             outline: "none"
           }}
