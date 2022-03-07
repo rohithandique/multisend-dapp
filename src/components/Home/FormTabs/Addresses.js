@@ -5,6 +5,7 @@ import {
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GrDocumentCsv } from "react-icons/gr"
 import { BsBookmarks } from "react-icons/bs"
+import CSVUpload from './CSVUpload'
 
 export default function Addresses() {
 
@@ -37,6 +38,7 @@ export default function Addresses() {
           </Button>
         </GridItem>
       </Grid>
+      { isUpload ?
       <Textarea id='addresses' type='text' w="100%" rows="8" backgroundColor="#E5E5E5"
       _placeholder={{color: "gray.500"}}
       placeholder='Input addresses separated with comma.
@@ -44,6 +46,11 @@ Example:
 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea,
 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
       />
+      :
+      <CSVUpload />
+      }
+      
+      
     </FormControl>
     </>
   )

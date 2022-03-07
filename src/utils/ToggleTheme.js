@@ -6,7 +6,9 @@ export default function ToggleTheme() {
     const { colorMode, toggleColorMode } = useColorMode()
     return (
       <header>
-        <Button size="lg" onClick={toggleColorMode} variant="ghost">
+        <Button size="lg" onClick={toggleColorMode} _focus={{
+            outline: "none"
+          }} variant="ghost">
           {colorMode === "light" ? <MoonIcon />  : <SunIcon />}
         </Button>
       </header>
