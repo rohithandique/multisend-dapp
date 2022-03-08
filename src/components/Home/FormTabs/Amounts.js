@@ -9,7 +9,7 @@ import { useAuth } from 'contexts/AuthContext'
 export default function Amounts() {
 
   const [ balance, setBalance ] = useState();
-  const { currentAccount } = useAuth();
+  const { currentAccount, setAmount } = useAuth();
   const getBalance = useCallback(async() => {
     if(!currentAccount) return;
     try {
@@ -23,6 +23,10 @@ export default function Amounts() {
       console.log(err)
     }
   }, [currentAccount])
+
+  const handleChange = (e) => {
+    setAmount(e.target.value)
+  }
 
   useEffect(() => {
     let isConnected = false;
@@ -38,8 +42,8 @@ export default function Amounts() {
     <FormControl mt="4">
         <FormLabel htmlFor='amount'>Amount per Address</FormLabel>
         <InputGroup>
-          <Input id='amount' _placeholder={{color: "gray.500"}} 
-          type='email' w={{base:'100%', md:"60%"}} backgroundColor="#E5E5E5" placeholder='10'/>
+          <Input id='amount' _placeholder={{color: "gray.500"}} onChange={handleChange}
+          type='number' color="black" w={{base:'100%', md:"60%"}} backgroundColor="#E5E5E5" placeholder='10' isRequired/>
           <InputRightAddon children="BNB" />
         </InputGroup>
         <FormHelperText>Wallet Balance: {balance ? balance : "0"} BNB</FormHelperText>

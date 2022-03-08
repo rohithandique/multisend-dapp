@@ -7,11 +7,18 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Center, Box, useColorModeValue
 } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
 import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { useAuth } from 'contexts/AuthContext';
 
 export default function MainTabs() {
 
     const bg = useColorModeValue("#E5E5E5", "gray.800");
     let navigate = useNavigate();
+
+    const { amount, tokenAddress, addresses, isUpload} = useAuth()
+
+    const confirm = () => {
+        navigate("/confirm", { replace: false })
+    }
 
     return (
     <Center bg={bg} h="90vh">
@@ -61,7 +68,7 @@ export default function MainTabs() {
                 _hover={{
                     backgroundColor: "brand.200"
                 }}
-                onClick={()=>{navigate("/confirm", { replace: false })}}
+                onClick={confirm}
                 >
                     NEXT
                 </Button>

@@ -8,6 +8,8 @@ import {
 } from 'react-papaparse';
 import { BsFillCloudArrowUpFill} from "react-icons/bs"
 
+import { useAuth } from 'contexts/AuthContext';
+
 const GREY = '#CCC';
 const DEFAULT_REMOVE_HOVER_COLOR = '#A01919';
 const REMOVE_HOVER_COLOR_LIGHT = lightenDarkenColor(
@@ -83,16 +85,28 @@ const styles = {
 };
 
 export default function CSVUpload() {
+
   const { CSVReader } = useCSVReader();
   const [zoneHover, setZoneHover] = useState(false);
   const [removeHoverColor, setRemoveHoverColor] = useState(
     DEFAULT_REMOVE_HOVER_COLOR
   );
+  const { setAddresses } = useAuth()
+  
+  const handleUpload = (data) => {
+    let _addressArr = []
+    for(let i=0; i<data.length; i++) {
+      if(data[i][0].length===42) {
+        _addressArr.push(data[i][0])
+      }
+    }
+    setAddresses(_addressArr)
+  }
 
   return (
     <CSVReader
       onUploadAccepted={(results) => {
-        console.log(results);
+        handleUpload(results["data"]);
         setZoneHover(false);
       }}
       onDragOver={(event) => {

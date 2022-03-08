@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
     FormControl, FormLabel, Textarea, Tooltip, Grid, GridItem, Button
 } from '@chakra-ui/react'
@@ -6,10 +6,21 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { FaFileCsv } from "react-icons/fa"
 import { BsBookmarks } from "react-icons/bs"
 import CSVUpload from './CSVUpload'
+import { useAuth } from 'contexts/AuthContext'
 
 export default function Addresses() {
 
-  const [ isUpload, setIsUpload ] = useState(true)
+  const { setAddresses, isUpload, setIsUpload} = useAuth()
+
+  const handleChange = (e) => {
+    setAddresses(e.target.value)
+  }
+
+  const handleClick = () => {
+    setAddresses(undefined)
+    setIsUpload(!isUpload)
+  }
+
   return (
     <>
     <FormControl mt="4">
@@ -23,7 +34,7 @@ export default function Addresses() {
           </FormLabel>
         </GridItem>
         <GridItem colSpan={1} display='flex' alignItems='flex-end' justifyContent='flex-end'>
-          <Button variant="unstyled" onClick={()=>setIsUpload(!isUpload)} 
+          <Button variant="unstyled" onClick={handleClick} 
           rightIcon={isUpload ? <FaFileCsv /> : <BsBookmarks />}
           _focus={{
             outline: "none"
@@ -31,23 +42,23 @@ export default function Addresses() {
           pb="4"
           >
             {isUpload ?
-            "Upload File"
-            :
             "Direct Input"
+            :
+            "Upload File"
             }
           </Button>
         </GridItem>
       </Grid>
       { isUpload ?
+      <CSVUpload />
+      :
       <Textarea id='addresses' type='text' w="100%" rows="8" backgroundColor="#E5E5E5"
-      _placeholder={{color: "gray.500"}}
+      _placeholder={{color: "gray.500"}} color="black" onChange={handleChange}
       placeholder='Input addresses separated with comma.
 Example:
 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea,
 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
       />
-      :
-      <CSVUpload />
       }
       
       
