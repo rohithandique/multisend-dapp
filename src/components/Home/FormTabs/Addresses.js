@@ -10,7 +10,7 @@ import { useAuth } from 'contexts/AuthContext'
 
 export default function Addresses() {
 
-  const { setAddresses, isUpload, setIsUpload} = useAuth()
+  const { setAddresses, isUpload, setIsUpload, isPro} = useAuth()
 
   const handleChange = (e) => {
     setAddresses(e.target.value)
@@ -54,10 +54,11 @@ export default function Addresses() {
       :
       <Textarea id='addresses' type='text' w="100%" rows="8" backgroundColor="#E5E5E5"
       _placeholder={{color: "gray.500"}} color="black" onChange={handleChange}
-      placeholder='Input addresses separated with comma.
-Example:
-0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea,
-0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
+      placeholder={isPro ? 
+        'Input addresses and values separated with comma. Example: 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 10, 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 20'
+        :
+        'Input addresses separated with comma. Example: 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
+    }
       />
       }
       

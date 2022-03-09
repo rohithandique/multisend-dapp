@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import {
     FormControl, FormLabel, FormHelperText, InputGroup,
     Input, InputRightAddon
@@ -8,8 +8,7 @@ import { useAuth } from 'contexts/AuthContext'
 
 export default function Amounts() {
 
-  const [ balance, setBalance ] = useState();
-  const { currentAccount, setAmount } = useAuth();
+  const { currentAccount, setAmount, balance, setBalance } = useAuth();
   const getBalance = useCallback(async() => {
     if(!currentAccount) return;
     try {
@@ -22,7 +21,7 @@ export default function Amounts() {
     } catch(err) {
       console.log(err)
     }
-  }, [currentAccount])
+  }, [currentAccount, setBalance])
 
   const handleChange = (e) => {
     setAmount(e.target.value)

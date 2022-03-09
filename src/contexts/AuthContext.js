@@ -14,6 +14,8 @@ export function AuthProvider({ children }) {
     const [ tokenAddress, setTokenAddress ] = useState()
     const [ addresses, setAddresses] = useState()
     const [ isUpload, setIsUpload ] = useState(false)
+    const [ isPro, setIsPro ] = useState(false)
+    const [ balance, setBalance ] = useState()
 
     const value = {
         currentAccount, setCurrentAccount,
@@ -21,7 +23,9 @@ export function AuthProvider({ children }) {
         amount, setAmount,
         tokenAddress, setTokenAddress,
         addresses, setAddresses,
-        isUpload, setIsUpload
+        isUpload, setIsUpload,
+        isPro, setIsPro,
+        balance, setBalance
     }
 
     return (
