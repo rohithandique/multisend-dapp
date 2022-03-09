@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import Amounts from './FormTabs/Amounts';
 import Addresses from './FormTabs/Addresses';
 import Token from './FormTabs/Token';
+
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Center, Box, useColorModeValue, 
     Button, Switch, FormControl, FormLabel, Tooltip, Grid, GridItem, useToast 
 } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { useAuth } from 'contexts/AuthContext';
+
 import convertStringAddrToArr from 'utils/convertStringAddrToArr';
+import convertStringAmountAddrToArr from 'utils/convertStringAmountAddrToArr';
 
 export default function MainTabs() {
 
@@ -92,8 +95,12 @@ export default function MainTabs() {
             return;
         }
 
-        if(typeof(addresses)==="string") {
+        if(!isPro && typeof(addresses)==="string") {
             setAddresses(convertStringAddrToArr(addresses))
+        }
+
+        if(isPro && typeof(addresses)==="string") {
+            setAddresses(convertStringAmountAddrToArr(addresses))
         }
         
         navigate("/confirm", { replace: false })

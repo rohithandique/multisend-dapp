@@ -13,12 +13,17 @@ export default function Confirm() {
     const bg = useColorModeValue("#E5E5E5", "gray.800");
     let navigate = useNavigate();
 
-    const { addresses, amount } = useAuth()
+    const { addresses, amount, setIsPro, isPro } = useAuth()
+
+    const handleBackClick = () => {
+        setIsPro(false)
+        navigate("/", { replace: false })
+    }
 
     return (
     <Center bg={bg} h="90vh">
         <Box rounded="xl" shadow="lg" bg={useColorModeValue("white", "gray.700")} p="4" w="80vw">
-            <Button variant="ghost" m="1" leftIcon={<ArrowBackIcon />} onClick={()=>{navigate("/", { replace: false })}}>
+            <Button variant="ghost" m="1" leftIcon={<ArrowBackIcon />} onClick={handleBackClick}>
                 Back
             </Button>
             <Table variant='simple' size="sm">
@@ -39,11 +44,11 @@ export default function Confirm() {
                     <SimpleGrid columns={[1, null, 2]} spacing={4}>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">
                             Total Number Of Addresses
-                            <Center>{addresses.length}</Center>    
+                            <Center>{addresses ? addresses.length : ""}</Center>    
                         </Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">
                             Total Amount to be Sent
-                            <Center>{addresses.length*amount}</Center>
+                            <Center>{isPro ? amount : addresses ? addresses.length*amount : ""}</Center>
                         </Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">Est. Total Transaction Cost</Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">Cost Decreased By</Box>

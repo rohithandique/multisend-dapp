@@ -91,13 +91,21 @@ export default function CSVUpload() {
   const [removeHoverColor, setRemoveHoverColor] = useState(
     DEFAULT_REMOVE_HOVER_COLOR
   );
-  const { setAddresses } = useAuth()
+  const { setAddresses, isPro } = useAuth()
   
   const handleUpload = (data) => {
     let _addressArr = []
-    for(let i=0; i<data.length; i++) {
-      if(data[i][0].length===42) {
-        _addressArr.push(data[i][0])
+    if(!isPro) {
+      for(let i=0; i<data.length; i++) {
+        if(data[i][0].length===42) {
+          _addressArr.push(data[i][0])
+        }
+      }
+    } else {
+      for(let i=0; i<data.length; i++) {
+        if(data[i][0].length===42) {
+          _addressArr.push([data[i][0], data[i][1]])
+        }
       }
     }
     setAddresses(_addressArr)
