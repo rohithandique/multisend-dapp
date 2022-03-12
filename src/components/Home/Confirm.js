@@ -1,23 +1,80 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AddressesList from './Confirm/AddressesList';
 import { Center, Box, useColorModeValue, 
     Button, Table, Thead, SimpleGrid,
     Tr, Th, Heading, TableCaption, VStack, 
+    useToast
 } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useAuth } from 'contexts/AuthContext';
+import { ethers } from 'ethers';
+
+import abi from "abi/multisend_abi.json"
 
 export default function Confirm() {
 
     const bg = useColorModeValue("#E5E5E5", "gray.800");
     let navigate = useNavigate();
+    const toast = useToast()
+    const toastID = 'toast'
 
-    const { addresses, amount, setIsPro, isPro } = useAuth()
+    const [ isLoading, setIsLoading ] = useState()
+
+    const { currentAccount, addresses, amount, isPro, setIsPro, 
+        setAmount, setTokenAddress, setAddresses, contractAddr
+    } = useAuth()
 
     const handleBackClick = () => {
         setIsPro(false)
+        setAddresses()
+        setAmount()
+        setTokenAddress()
         navigate("/", { replace: false })
+    }
+
+    const sendTx = async() => {
+        setIsLoading(true)
+        if(!currentAccount) {
+            toast({
+                toastID,
+                title: 'No Account Found!',
+                description: "Please connect with your wallet.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        try {
+            const { ethereum } = window; //injected by metamask
+            //connect to an ethereum node
+            const provider = new ethers.providers.Web3Provider(ethereum); 
+            //gets the account
+            const signer = provider.getSigner(); 
+            //connects with the contract
+            const multisendContract = new ethers.Contract(contractAddr, abi, signer);
+            console.log(amount)
+            console.log(addresses)
+            console.log(isPro)
+            if(isPro) {
+                const options = {value: ethers.utils.parseEther((amount).toString())}
+                let _amountArr = []
+                let _addressArr = []
+                for(let i=0; i<addresses.length; i++) {
+                    _amountArr.push(ethers.utils.parseEther(addresses[i][1]))
+                    _addressArr.push(addresses[i][0])
+                }
+                await multisendContract.ethSendDifferentValue(_addressArr, _amountArr, options)
+            } else {
+                const options = {value: ethers.utils.parseEther((amount*addresses.length).toString())}
+                await multisendContract.ethSendSameValue(addresses, ethers.utils.parseEther(amount), options);
+            }
+        } catch(err) {
+            console.log(err)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -58,7 +115,8 @@ export default function Confirm() {
                     _hover={{
                         backgroundColor: "brand.200"
                     }}
-                    onClick={()=>console.log(addresses)}
+                    onClick={sendTx}
+                    isLoading={isLoading}
                     >
                         SEND
                     </Button>
