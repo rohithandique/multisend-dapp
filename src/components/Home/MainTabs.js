@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Amounts from './FormTabs/Amounts';
 import Addresses from './FormTabs/Addresses';
 import Token from './FormTabs/Token';
@@ -19,10 +19,8 @@ export default function MainTabs() {
     let navigate = useNavigate();
     const toast = useToast()
 
-    const [ tabIndex, setTabIndex ] = useState(0)
-
     const { amount, tokenAddress, addresses, setAddresses, 
-        currentAccount, isPro, setIsPro, balance } = useAuth()
+        currentAccount, isPro, setIsPro, tabIndex, setTabIndex } = useAuth()
 
     const changePro = () => {
         setIsPro(!isPro)
@@ -55,17 +53,6 @@ export default function MainTabs() {
             toast({
                 title: 'Incorrect Amount detected',
                 description: "Amount can't be negative.",
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            })
-            return;
-        }
-
-        if(!isPro && amount > balance ) {
-            toast({
-                title: 'Incorrect Amount detected',
-                description: "Amount can't be more than balance.",
                 status: 'error',
                 duration: 3000,
                 isClosable: true,

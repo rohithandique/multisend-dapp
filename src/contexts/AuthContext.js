@@ -16,6 +16,8 @@ export function AuthProvider({ children }) {
     const [ isUpload, setIsUpload ] = useState(false)
     const [ isPro, setIsPro ] = useState(false)
     const [ balance, setBalance ] = useState()
+    const [ tabIndex, setTabIndex ] = useState(0)
+
     const contractAddr = "0x83cC30e1E5f814883B260CE32A2a13D3493E5439"
     const value = {
         currentAccount, setCurrentAccount,
@@ -26,7 +28,8 @@ export function AuthProvider({ children }) {
         isUpload, setIsUpload,
         isPro, setIsPro,
         balance, setBalance,
-        contractAddr
+        contractAddr,
+        tabIndex, setTabIndex
     }
 
     return (

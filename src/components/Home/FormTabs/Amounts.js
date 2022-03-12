@@ -8,7 +8,7 @@ import { useAuth } from 'contexts/AuthContext'
 
 export default function Amounts() {
 
-  const { currentAccount, setAmount, balance, setBalance } = useAuth();
+  const { currentAccount, setAmount, balance, setBalance, tabIndex } = useAuth();
   const getBalance = useCallback(async() => {
     if(!currentAccount) return;
     try {
@@ -45,7 +45,11 @@ export default function Amounts() {
           type='number' color="black" w={{base:'100%', md:"60%"}} backgroundColor="#E5E5E5" placeholder='10' isRequired/>
           <InputRightAddon children="BNB" />
         </InputGroup>
-        <FormHelperText>Wallet Balance: {balance ? balance : "0"} BNB</FormHelperText>
+        {tabIndex===0 ?
+          <FormHelperText>Wallet Balance: {balance ? balance : "0"} BNB</FormHelperText>
+          : 
+          <></>
+        }
     </FormControl>
     </>
   )
