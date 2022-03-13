@@ -10,7 +10,7 @@ import { ArrowBackIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { useAuth } from 'contexts/AuthContext';
 import { ethers } from 'ethers';
 
-import multisend_abi from "abi/multisend_abi.json"
+import multisend_abi from "abi/abi.json"//"abi/multisend_abi.json"
 import erc20_abi from "abi/erc20_abi.json"
 
 export default function Confirm() {
@@ -21,7 +21,7 @@ export default function Confirm() {
     const toastID = 'toast'
 
     const [ isLoading, setIsLoading ] = useState()
-    const [ isApproved, setIsApproved ] = useState(true)
+    const [ isApproved, setIsApproved ] = useState(false)
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
         setAmount, setTokenAddress, setAddresses, contractAddr
@@ -36,7 +36,7 @@ export default function Confirm() {
     }
 
     const sendTx = async() => {
-        setIsLoading(true)
+        //console.log(addresses)
         if(!currentAccount) {
             toast({
                 toastID,
@@ -48,6 +48,7 @@ export default function Confirm() {
             })
             return;
         }
+        setIsLoading(true)
         try {
             const { ethereum } = window; //injected by metamask
             //connect to an ethereum node
@@ -67,8 +68,9 @@ export default function Confirm() {
                 await multisendContract.ethSendDifferentValue(_addressArr, _amountArr, options)
             } else {
                 const options = {value: ethers.utils.parseEther((amount*addresses.length).toString())}
-                await multisendContract.ethSendSameValue(addresses, ethers.utils.parseEther(amount), options);
+                await multisendContract.ethSendSameValue(addresses, ethers.utils.parseEther((amount).toString()), options);
             }
+            
         } catch(err) {
             console.log(err)
         } finally {
@@ -106,7 +108,7 @@ export default function Confirm() {
                 }
                 await multisendContract.sendDifferentValue(tokenAddress, _addressArr, _amountArr)
             } else {
-                await multisendContract.sendSameValue(tokenAddress, addresses, ethers.utils.parseEther(amount));
+                await multisendContract.sendSameValue(tokenAddress, addresses, ethers.utils.parseEther((amount).toString()));
             }
         } catch(err) {
             console.log(err)

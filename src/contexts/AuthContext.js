@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     const [ balance, setBalance ] = useState()
     const [ tabIndex, setTabIndex ] = useState(0)
 
-    const contractAddr = "0x83cC30e1E5f814883B260CE32A2a13D3493E5439"
+    const contractAddr = "0x57135bEA188990A1bc58113c9f0C08AB5C6C0f5F"//"0x83cC30e1E5f814883B260CE32A2a13D3493E5439"
     const value = {
         currentAccount, setCurrentAccount,
         currentNetwork, setCurrentNetwork,
