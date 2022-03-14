@@ -59,7 +59,7 @@ export default function MainTabs() {
             })
             return;
         }
-
+        
         if(tabIndex === 1 && tokenAddress.length!==42) {
             toast({
                 title: 'Incorrect Token Address detected',

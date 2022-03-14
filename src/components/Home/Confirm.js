@@ -10,7 +10,7 @@ import { ArrowBackIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { useAuth } from 'contexts/AuthContext';
 import { ethers } from 'ethers';
 
-import multisend_abi from "abi/abi.json"//"abi/multisend_abi.json"
+import multisend_abi from "abi/multisend_abi.json"
 import erc20_abi from "abi/erc20_abi.json"
 
 export default function Confirm() {
