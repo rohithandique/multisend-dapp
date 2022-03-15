@@ -20,7 +20,9 @@ export default function MainTabs() {
     const toast = useToast()
 
     const { amount, tokenAddress, addresses, setAddresses, 
-        currentAccount, isPro, setIsPro, tabIndex, setTabIndex } = useAuth()
+        currentAccount, isPro, setIsPro, tabIndex, setTabIndex,
+        currentNetwork
+    } = useAuth()
 
     const changePro = () => {
         setIsPro(!isPro)
@@ -73,8 +75,8 @@ export default function MainTabs() {
         
         if(!addresses || addresses.length===0) {
             toast({
-                title: 'Incorrect Addresses detected',
-                description: "Please enter correct addresses",
+                title: 'Incorrect Addresses detected!',
+                description: "Please enter correct addresses.",
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
@@ -90,6 +92,17 @@ export default function MainTabs() {
             setAddresses(convertStringAmountAddrToArr(addresses))
         }
         
+        if(currentNetwork !== 56 && currentNetwork !==97 && currentNetwork !== 128) {
+            toast({
+                title: 'Unsupported Network detected!',
+                description: "Please switch to supported network.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+
         navigate("/confirm", { replace: false })
     }
 
@@ -106,7 +119,13 @@ export default function MainTabs() {
                     <TabList  mx={4} mt="8" p={2} bg="brand.300" rounded="xl" w={{base:"92.5%", md:"60%"}} color="black">
                     <Tab _selected={{ color: 'black', bg: 'brand.200' }} 
                         _focus={{ outline: "none" }} rounded="lg">
-                        Send BNB
+                        Send {
+                        currentNetwork === 56 || currentNetwork ===97 ? "BNB"
+                        :  
+                        currentNetwork === 128 ? "HT"
+                        :
+                        currentNetwork === 1
+                        ? "ETH" : ""}
                     </Tab>
                     <Tab _selected={{ color: 'black', bg: 'brand.200' }}
                         _focus={{ outline: "none" }} rounded="lg">

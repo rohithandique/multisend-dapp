@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AddressesList from './Confirm/AddressesList';
 import { Center, Box, useColorModeValue, 
     Button, Table, Thead, SimpleGrid,
@@ -24,8 +24,19 @@ export default function Confirm() {
     const [ isApproved, setIsApproved ] = useState(false)
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
-        setAmount, setTokenAddress, setAddresses, contractAddr
+        setAmount, setTokenAddress, setAddresses, contractAddr, currentNetwork,
+        setContractAddr
     } = useAuth()
+
+    useEffect(() => {
+        if(currentNetwork === 56 ) {
+            setContractAddr("0x83cC30e1E5f814883B260CE32A2a13D3493E5439")
+        } else if(currentNetwork === 128) {
+            setContractAddr("0xF104c1F8346F6BfF0565106B15e1bC989d10216d");
+        } else if(currentNetwork === 97) {
+            setContractAddr("0x4e7369474301364B6348F0660a87A6D5557e6F9f");
+        } else setContractAddr()
+    }, [currentNetwork, setContractAddr])
 
     const handleBackClick = () => {
         setIsPro(false)
@@ -37,11 +48,36 @@ export default function Confirm() {
 
     const sendTx = async() => {
         //console.log(addresses)
+        
+        console.log(currentNetwork)
+        console.log(contractAddr)
         if(!currentAccount) {
             toast({
                 toastID,
                 title: 'No Account Found!',
                 description: "Please connect with your wallet.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        if(currentNetwork!==56 && currentNetwork!==128 && currentNetwork!==97) {
+            toast({
+                toastID,
+                title: 'Incorrect Network detected!',
+                description: "Please switch to supported networks.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        if(!amount) {
+            toast({
+                toastID,
+                title: 'No amount detected',
+                description: "Please input correct values",
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
@@ -70,7 +106,14 @@ export default function Confirm() {
                 const options = {value: ethers.utils.parseEther((amount*addresses.length).toString())}
                 await multisendContract.ethSendSameValue(addresses, ethers.utils.parseEther((amount).toString()), options);
             }
-            
+            toast({
+                toastID,
+                title: 'Transaction Submitted',
+                description: "Please check explorer.",
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            })
         } catch(err) {
             console.log(err)
         } finally {
@@ -85,6 +128,28 @@ export default function Confirm() {
                 toastID,
                 title: 'No Account Found!',
                 description: "Please connect with your wallet.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        if(currentNetwork!==56 && currentNetwork!==128 && currentNetwork!==97) {
+            toast({
+                toastID,
+                title: 'Incorrect Network detected!',
+                description: "Please switch to supported networks.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        if(!amount) {
+            toast({
+                toastID,
+                title: 'No amount detected',
+                description: "Please input correct values",
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
@@ -110,6 +175,14 @@ export default function Confirm() {
             } else {
                 await multisendContract.sendSameValue(tokenAddress, addresses, ethers.utils.parseEther((amount).toString()));
             }
+            toast({
+                toastID,
+                title: 'Transaction Submitted',
+                description: "Please check explorer.",
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            })
         } catch(err) {
             console.log(err)
         } finally {
@@ -130,6 +203,28 @@ export default function Confirm() {
             })
             return;
         }
+        if(currentNetwork!==56 && currentNetwork!==128 && currentNetwork!==97) {
+            toast({
+                toastID,
+                title: 'Incorrect Network detected!',
+                description: "Please switch to supported networks.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
+        if(!amount) {
+            toast({
+                toastID,
+                title: 'No amount detected',
+                description: "Please input correct values",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            })
+            return;
+        }
         try {
             const { ethereum } = window; //injected by metamask
             //connect to an ethereum node
@@ -143,6 +238,14 @@ export default function Confirm() {
             setTimeout(() => {
                 setIsApproved(true)
             }, 5000);
+            toast({
+                toastID,
+                title: 'Approval Request Submitted',
+                description: "Please check explorer.",
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            })
         } catch(err) {
             console.log(err)
         } finally {
@@ -199,8 +302,8 @@ export default function Confirm() {
                             Total Amount to be Sent
                             <Center>{isPro ? amount : addresses ? (addresses.length*10*amount)/10 : ""}</Center>
                         </Box>
-                        <Box rounded="xl" bg='brand.200' height='80px' p="4">Est. Total Transaction Cost</Box>
-                        <Box rounded="xl" bg='brand.200' height='80px' p="4">Cost Decreased By</Box>
+                        {/*<Box rounded="xl" bg='brand.200' height='80px' p="4">Est. Total Transaction Cost</Box>
+                        <Box rounded="xl" bg='brand.200' height='80px' p="4">Cost Decreased By</Box>*/}
                     </SimpleGrid>
                     {tokenAddress ?
                     isApproved ?

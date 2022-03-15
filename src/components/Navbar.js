@@ -2,21 +2,37 @@ import React from "react";
 import ToggleTheme from "utils/ToggleTheme";
 
 import {
-  chakra, Box, Flex, useColorModeValue, VisuallyHidden,
-  HStack, Button, useDisclosure, VStack,
-  IconButton, CloseButton, Image
+  chakra, Box, Flex, useColorModeValue,
+  HStack, useDisclosure, VStack,
+  IconButton, CloseButton, Image, Alert,
+  AlertIcon, AlertTitle, AlertDescription,
 } from "@chakra-ui/react";
 
 import { HamburgerIcon} from "@chakra-ui/icons"
 import Logo from "assets/logo.png";
 import LoginButton from "./LoginButton";
 
+import { useAuth } from "contexts/AuthContext";
+
 export default function Navbar() {
   const bg = useColorModeValue("#E5E5E5", "gray.800");
   const mobileNav = useDisclosure();
 
+  const { currentNetwork } = useAuth()
+
   return (
     <React.Fragment >
+      {currentNetwork === 56 || currentNetwork ===97 || currentNetwork === 128 
+      ?
+      <></>
+      :
+      <Alert status='warning' justifyContent='center'>
+        <AlertIcon />
+        <AlertTitle mr={2}>Current Network not supported!</AlertTitle> 
+        <AlertDescription>Please switch to supported networks.</AlertDescription>
+      </Alert>
+      }
+      
       <chakra.header
         bg={bg}
         w="full"
@@ -32,11 +48,10 @@ export default function Navbar() {
               alignItems="center"
             >
               <Image src={Logo} h="30px"/>
-              <VisuallyHidden>One Click</VisuallyHidden>
+              <chakra.h1 fontSize="xl" fontWeight="medium" ml="2">
+                One Click
+              </chakra.h1>
             </chakra.a>
-            <chakra.h1 fontSize="xl" fontWeight="medium" ml="2">
-              One Click
-            </chakra.h1>
           </Flex>
           <HStack display="flex" alignItems="center" spacing={1}>
             <HStack
@@ -45,7 +60,7 @@ export default function Navbar() {
               color="brand.500"
               display={{ base: "none", md: "inline-flex" }}
             >
-              <Button variant="ghost">Todo</Button>
+              {/*<Button variant="ghost">Todo</Button>*/}
               <ToggleTheme />
             </HStack>
             <LoginButton />
@@ -80,9 +95,9 @@ export default function Navbar() {
                   onClick={mobileNav.onClose}
                 />
 
-                <Button w="full" variant="ghost">
+                {/*<Button w="full" variant="ghost">
                   Todo
-                </Button>
+                </Button>*/}
                 <ToggleTheme />
               </VStack>
             </Box>

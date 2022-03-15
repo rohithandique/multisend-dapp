@@ -3,6 +3,8 @@ import Navbar from 'components/Navbar'
 import MainTabs from 'components/Home/MainTabs'
 import Confirm from 'components/Home/Confirm';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Footer from 'components/Footer';
+import SupportedNetworks from 'components/Home/SupportedNetworks';
 
 export default function Home() {
   return (
@@ -14,6 +16,8 @@ export default function Home() {
             <Route path="/confirm" element={<Confirm />}/>
           </Routes>
         </Router>
+        <SupportedNetworks />
+        <Footer />
     </>
   )
 }

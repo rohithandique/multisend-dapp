@@ -7,6 +7,7 @@ import { useAuth } from 'contexts/AuthContext';
 //import { ChevronDownIcon } from '@chakra-ui/icons';
 import BNBLogo from "assets/bnb-logo.svg"
 import ETHLogo from "assets/eth-logo.svg"
+import HECOLogo from "assets/heco-logo.png"
 
 export default function LoginButton() {
 
@@ -54,11 +55,13 @@ export default function LoginButton() {
   return (
           <>
           { currentAccount ? 
-          <Button bg={bg}>
+          <Button bg={bg} size="lg">
             <Image src={
-              currentNetwork === 56 || currentNetwork === 97 ? BNBLogo 
+              currentNetwork === 56 || currentNetwork ===97 ? BNBLogo 
               :  
-              currentNetwork === 1 || currentNetwork === 3 || currentNetwork === 4 || currentNetwork === 5 || currentNetwork === 42
+              currentNetwork === 128 ? HECOLogo
+              :
+              currentNetwork === 1
               ? ETHLogo : ""} h="15px" mr="2"/>
             {currentAccount.substring(0, 5)+"...."+currentAccount.substring(currentAccount.length-6)}
           </Button>

@@ -5,7 +5,9 @@ import { useAuth } from "contexts/AuthContext";
 
 function App() {
 
-  const { setCurrentAccount, setCurrentNetwork } = useAuth()
+  const { setCurrentAccount, setCurrentNetwork, 
+    currentNetwork, setContractAddr
+  } = useAuth()
 
   useEffect(() => {
 
@@ -32,7 +34,7 @@ function App() {
     }
     initialCheck();
 
-  }, [setCurrentAccount, setCurrentNetwork]);
+  }, [setCurrentAccount, setCurrentNetwork, setContractAddr, currentNetwork]);
 
   return (
     <>
