@@ -2,6 +2,7 @@ import React from 'react'
 import Amounts from './FormTabs/Amounts';
 import Addresses from './FormTabs/Addresses';
 import Token from './FormTabs/Token';
+import SupportedNetworks from './SupportedNetworks';
 
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Center, Box, useColorModeValue, 
     Button, Switch, FormControl, FormLabel, Tooltip, Grid, GridItem, useToast 
@@ -111,6 +112,7 @@ export default function MainTabs() {
     }
 
     return (
+    <>
     <Center bg={bg} h="90vh">
         <Box px="2" pb="4" rounded="xl" shadow="lg" bg={useColorModeValue("white", "gray.700")} w={{base:'90vw', md:"60vw"}}>
             <Tabs isFitted variant='unstyled' onChange={(index) => handleTabChange(index)}>
@@ -175,5 +177,7 @@ export default function MainTabs() {
             </Center>
         </Box>
     </Center>
+    <SupportedNetworks />
+    </>
   )
 }

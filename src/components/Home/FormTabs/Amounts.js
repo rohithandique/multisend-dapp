@@ -46,12 +46,12 @@ export default function Amounts() {
           <Input id='amount' _placeholder={{color: "gray.500"}} onChange={handleChange}
           type='number' color="black" w={{base:'100%', md:"60%"}} backgroundColor="#E5E5E5" placeholder='10' isRequired/>
           <InputRightAddon children={
-                        currentNetwork === 56 || currentNetwork ===97 ? "BNB"
-                        :  
-                        currentNetwork === 128 ? "HT"
-                        :
-                        currentNetwork === 1
-                        ? "ETH" : ""} />
+            currentNetwork === 56 || currentNetwork ===97 ? "BNB"
+            :  
+            currentNetwork === 128 ? "HT"
+            :
+            currentNetwork === 1
+            ? "ETH" : ""} />
         </InputGroup>
         {tabIndex===0 ?
           <FormHelperText>Wallet Balance: {balance ? balance : "0"} {

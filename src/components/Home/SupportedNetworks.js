@@ -7,9 +7,9 @@ import HECOLogo from "assets/heco-logo.png"
 export default function SupportedNetworks() {
     return (
         <Box
-        bg={useColorModeValue('gray.50', 'gray.800')}
+        bg={useColorModeValue('#E5E5E5', 'gray.800')}
         color={useColorModeValue('gray.700', 'gray.200')}
-        mb="8">
+        pb="8">
         <Container
             as={Stack}
             maxW={'6xl'}
