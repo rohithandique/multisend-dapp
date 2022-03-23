@@ -18,6 +18,7 @@ export function AuthProvider({ children }) {
     const [ balance, setBalance ] = useState()
     const [ tabIndex, setTabIndex ] = useState(0)
     const [ contractAddr, setContractAddr ] = useState()
+    const [ isChecked, setIsChecked ] = useState(false)
 
     const value = {
         currentAccount, setCurrentAccount,
@@ -29,7 +30,8 @@ export function AuthProvider({ children }) {
         isPro, setIsPro,
         balance, setBalance,
         contractAddr, setContractAddr,
-        tabIndex, setTabIndex
+        tabIndex, setTabIndex,
+        isChecked, setIsChecked
     }
 
     return (

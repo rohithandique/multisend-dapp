@@ -52,16 +52,23 @@ export default function Addresses() {
       { isUpload ?
       <CSVUpload />
       :
+      isPro ?
       <Textarea id='addresses' type='text' w="100%" rows="8" backgroundColor="#E5E5E5"
-      _placeholder={{color: "gray.500"}} color="black" onChange={handleChange}
-      placeholder={isPro ? 
-        'Input addresses and values separated with comma. Example: 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 10, 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 20'
-        :
-        'Input addresses separated with comma. Example: 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
-    }
+      _placeholder={{color: "gray.500"}} color="black" onChange={handleChange} multiline="true"
+      placeholder=
+        '1. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 10, 
+2. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 20,
+3. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 30'
+      />
+      :
+      <Textarea id='addresses' type='text' w="100%" rows="8" backgroundColor="#E5E5E5"
+      _placeholder={{color: "gray.500"}} color="black" onChange={handleChange} multiline="true"
+      placeholder=
+        '1. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea, 
+2. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea
+3. 0x1a0b5F2EAde71626D051C29Ef425d9c49dc87Aea'
       />
       }
-      
       
     </FormControl>
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import AddressesList from './Confirm/AddressesList';
 import { Center, Box, useColorModeValue, 
     Button, Table, Thead, SimpleGrid,
@@ -12,6 +12,7 @@ import { ethers } from 'ethers';
 
 import multisend_abi from "abi/multisend_abi.json"
 import erc20_abi from "abi/erc20_abi.json"
+import DonationBox from './Confirm/DonationBox';
 
 export default function Confirm() {
 
@@ -22,11 +23,30 @@ export default function Confirm() {
 
     const [ isLoading, setIsLoading ] = useState()
     const [ isApproved, setIsApproved ] = useState(false)
+    const [ tokenSymbol, setTokenSymbol ] = useState()
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
         setAmount, setTokenAddress, setAddresses, contractAddr, currentNetwork,
-        setContractAddr
+        setContractAddr, setTabIndex
     } = useAuth()
+
+    const getTokenSymbol = useCallback(async() => {
+            try {
+                const { ethereum } = window; //injected by metamask
+                //connect to an ethereum node
+                const provider = new ethers.providers.Web3Provider(ethereum); 
+                //gets the account
+                const signer = provider.getSigner(); 
+                //connects with the contract
+                const tokenContract = new ethers.Contract(tokenAddress, erc20_abi, signer);
+                setTokenSymbol(await tokenContract.symbol());
+            } catch(err) {
+                console.log(err)
+            }
+        },
+        [tokenAddress]
+    )
+
 
     useEffect(() => {
         if(currentNetwork === 56 ) {
@@ -36,13 +56,19 @@ export default function Confirm() {
         } else if(currentNetwork === 97) {
             setContractAddr("0x4e7369474301364B6348F0660a87A6D5557e6F9f");
         } else setContractAddr()
-    }, [currentNetwork, setContractAddr])
+
+
+        if(tokenAddress) {
+            getTokenSymbol()
+        }
+    }, [currentNetwork, setContractAddr, getTokenSymbol, tokenAddress])
 
     const handleBackClick = () => {
         setIsPro(false)
         setAddresses()
         setAmount()
         setTokenAddress()
+        setTabIndex(0)
         navigate("/", { replace: false })
     }
 
@@ -300,11 +326,17 @@ export default function Confirm() {
                         </Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">
                             Total Amount to be Sent
-                            <Center>{isPro ? amount : addresses ? (addresses.length*10*amount)/10 : ""}</Center>
+                            <Center>{isPro 
+                                ? tokenAddress ? amount + " " + tokenSymbol :  amount
+                                : addresses 
+                                ? tokenAddress ? (addresses.length*10*amount)/10 + " " + tokenSymbol : (addresses.length*10*amount)/10
+                                : ""}
+                            </Center>
                         </Box>
                         {/*<Box rounded="xl" bg='brand.200' height='80px' p="4">Est. Total Transaction Cost</Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">Cost Decreased By</Box>*/}
                     </SimpleGrid>
+                    <DonationBox />
                     {tokenAddress ?
                     isApproved ?
                     <Button bg="brand.100" color="white"

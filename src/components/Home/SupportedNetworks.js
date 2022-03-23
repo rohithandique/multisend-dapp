@@ -13,7 +13,7 @@ export default function SupportedNetworks() {
         <Container
             as={Stack}
             maxW={'6xl'}
-            py={{base: "20", sm: "4"}}
+            py={{base: "20", sm: "0"}}
             spacing={4}
             justify={'center'}
             align={'center'}>
