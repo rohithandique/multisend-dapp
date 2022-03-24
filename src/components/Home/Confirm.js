@@ -24,29 +24,126 @@ export default function Confirm() {
     const [ isLoading, setIsLoading ] = useState()
     const [ isApproved, setIsApproved ] = useState(false)
     const [ tokenSymbol, setTokenSymbol ] = useState()
+    const [ coinGas, setCoinGas ] = useState()
+    const [ tokenGas, setTokenGas ] = useState()
+    const [ contractGas, setContractGas ] = useState()
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
         setAmount, setTokenAddress, setAddresses, contractAddr, currentNetwork,
-        setContractAddr, setTabIndex
+        setContractAddr, setTabIndex, tabIndex
     } = useAuth()
 
     const getTokenSymbol = useCallback(async() => {
-            try {
-                const { ethereum } = window; //injected by metamask
-                //connect to an ethereum node
-                const provider = new ethers.providers.Web3Provider(ethereum); 
-                //gets the account
-                const signer = provider.getSigner(); 
-                //connects with the contract
-                const tokenContract = new ethers.Contract(tokenAddress, erc20_abi, signer);
-                setTokenSymbol(await tokenContract.symbol());
-            } catch(err) {
-                console.log(err)
-            }
-        },
-        [tokenAddress]
-    )
+        try {
+            const { ethereum } = window; //injected by metamask
+            //connect to an ethereum node
+            const provider = new ethers.providers.Web3Provider(ethereum); 
+            //gets the account
+            const signer = provider.getSigner(); 
+            //connects with the contract
+            const tokenContract = new ethers.Contract(tokenAddress, erc20_abi, signer);
+            setTokenSymbol(await tokenContract.symbol());
+        } catch(err) {
+            console.log(err)
+        }
+    }, [tokenAddress])
+    console.log(coinGas)
+    console.log(contractGas)
+    console.log(tokenGas)
+    const getCoinGasPrice = useCallback(() => {
+        try {
+            const { ethereum } = window; //injected by metamask
+            //connect to an ethereum node
+            const provider = new ethers.providers.Web3Provider(ethereum); 
+            provider.getGasPrice().then((currentPrice)=> {
+                if(addresses) {
+                    setCoinGas(addresses.length*21000*ethers.utils.formatUnits(currentPrice, "gwei"))
+                }
+            })
+            
+        } catch(err) {
+            console.log(err)
+        }
+    }, [addresses])
 
+    const getTokenGasPrice = useCallback(async() => {
+        try {
+            const { ethereum } = window; //injected by metamask
+            //connect to an ethereum node
+            const provider = new ethers.providers.Web3Provider(ethereum); 
+            //gets the account
+            const signer = provider.getSigner(); 
+            let _currentPrice;
+            provider.getGasPrice().then((currentPrice)=> {
+                _currentPrice = ethers.utils.formatUnits(currentPrice, "gwei")
+            })
+            const recipient = "0x6D5a57d179FaDf0f267893729FdB50F056F83DD5"
+            const erc20 = new ethers.Contract(tokenAddress, erc20_abi , signer);
+            const estimation = await erc20.estimateGas.transfer(recipient, 1)
+            setTokenGas(addresses.length*parseInt(estimation["_hex"], 16)*_currentPrice)
+        } catch(err) {
+            console.log(err)
+        }
+    }, [tokenAddress, addresses])
+
+    const getContractGasPrice = useCallback(async() => {
+        try {
+            const { ethereum } = window; //injected by metamask
+            //connect to an ethereum node
+            const provider = new ethers.providers.Web3Provider(ethereum); 
+            //gets the account
+            const signer = provider.getSigner(); 
+            let _currentPrice;
+            provider.getGasPrice().then((currentPrice)=> {
+                _currentPrice = ethers.utils.formatUnits(currentPrice, "gwei")
+            })
+            const multisend_contract = new ethers.Contract(contractAddr, multisend_abi , signer);
+            let estimation;
+            if(isPro) {
+                if(tabIndex===1) {
+                    let _amountArr = []
+                    let _addressArr = []
+                    for(let i=0; i<addresses.length; i++) {
+                        _amountArr.push(ethers.utils.parseEther(addresses[i][1]))
+                        _addressArr.push(addresses[i][0])
+                    }
+                    try {
+                        estimation = await multisend_contract.estimateGas.sendDifferentValue(tokenAddress, _addressArr, _amountArr)
+                        setContractGas(parseInt(estimation["_hex"], 16)*_currentPrice)
+                    } catch(err) {
+                        console.log(err)
+                    }
+                } else {
+                    const options = {value: ethers.utils.parseEther((amount).toString())}
+                    let _amountArr = []
+                    let _addressArr = []
+                    for(let i=0; i<addresses.length; i++) {
+                        _amountArr.push(ethers.utils.parseEther(addresses[i][1]))
+                        _addressArr.push(addresses[i][0])
+                    }
+                    estimation = await multisend_contract.estimateGas.ethSendDifferentValue(_addressArr, _amountArr, options)
+                    setContractGas(parseInt(estimation["_hex"], 16)*_currentPrice)
+                }
+            } else {
+                if(tabIndex===1) {
+                    try {
+                        estimation = await multisend_contract.estimateGas.sendSameValue(tokenAddress, addresses, ethers.utils.parseEther((amount).toString()))
+                        setContractGas(parseInt(estimation["_hex"], 16)*_currentPrice)
+                    } catch(err) {
+                        console.log(err)
+                    }
+                } else {
+                    const options = {value: ethers.utils.parseEther((amount*addresses.length).toString())}
+                    estimation = await multisend_contract.estimateGas.ethSendSameValue(addresses, ethers.utils.parseEther((amount).toString()), options)
+                    console.log(_currentPrice)
+                    setContractGas(parseInt(estimation["_hex"], 16)*_currentPrice)
+                }
+            }
+            console.log(parseInt(estimation["_hex"], 16))
+        } catch(err) {
+            console.log(err)
+        }
+    }, [addresses, amount, contractAddr, tokenAddress, isPro, tabIndex])
 
     useEffect(() => {
         if(currentNetwork === 56 ) {
@@ -56,12 +153,18 @@ export default function Confirm() {
         } else if(currentNetwork === 97) {
             setContractAddr("0x4e7369474301364B6348F0660a87A6D5557e6F9f");
         } else setContractAddr()
-
-
+        //getTokenGasPrice()
+        if(tabIndex===1) {
+            getTokenGasPrice()
+        } else {
+            getCoinGasPrice()
+        }
+        getContractGasPrice()
         if(tokenAddress) {
             getTokenSymbol()
         }
-    }, [currentNetwork, setContractAddr, getTokenSymbol, tokenAddress])
+    }, [currentNetwork, setContractAddr, getTokenSymbol, tokenAddress, 
+        getTokenGasPrice, getContractGasPrice, getCoinGasPrice, tabIndex])
 
     const handleBackClick = () => {
         setIsPro(false)
@@ -73,10 +176,6 @@ export default function Confirm() {
     }
 
     const sendTx = async() => {
-        //console.log(addresses)
-        
-        console.log(currentNetwork)
-        console.log(contractAddr)
         if(!currentAccount) {
             toast({
                 toastID,
@@ -325,7 +424,9 @@ export default function Confirm() {
                             <Center>{addresses ? addresses.length : ""}</Center>    
                         </Box>
                         <Box rounded="xl" bg='brand.200' height='80px' p="4">
+                            <Center>
                             Total Amount to be Sent
+                            </Center>
                             <Center>{isPro 
                                 ? tokenAddress ? amount + " " + tokenSymbol :  amount
                                 : addresses 
@@ -333,8 +434,20 @@ export default function Confirm() {
                                 : ""}
                             </Center>
                         </Box>
-                        {/*<Box rounded="xl" bg='brand.200' height='80px' p="4">Est. Total Transaction Cost</Box>
-                        <Box rounded="xl" bg='brand.200' height='80px' p="4">Cost Decreased By</Box>*/}
+                        <Box rounded="xl" bg='brand.200' height='80px' p="4">
+                            <Center>
+                            Est. Total Transaction Cost
+                            </Center>
+                        </Box>
+                        
+                        <Box rounded="xl" bg='brand.200' height='80px' p="4">
+                            <Center>
+                            Cost Decreased By
+                            </Center>
+                            <Center>
+                                {contractGas ? tokenGas ? isApproved ? Math.round(((tokenGas-contractGas)/tokenGas)*100)+" %" : "" : Math.round(((coinGas-contractGas)/coinGas)*100)+" %" : ""}
+                            </Center>
+                        </Box>
                     </SimpleGrid>
                     <DonationBox />
                     {tokenAddress ?
