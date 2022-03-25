@@ -25,7 +25,6 @@ export default function Confirm() {
     const [ isApproved, setIsApproved ] = useState(false)
     const [ tokenSymbol, setTokenSymbol ] = useState()
     const [ coinGas, setCoinGas ] = useState()
-    const [ tokenGas, setTokenGas ] = useState()
     const [ contractGas, setContractGas ] = useState()
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
@@ -47,9 +46,7 @@ export default function Confirm() {
             console.log(err)
         }
     }, [tokenAddress])
-    console.log(coinGas)
-    console.log(contractGas)
-    console.log(tokenGas)
+
     const getCoinGasPrice = useCallback(() => {
         try {
             const { ethereum } = window; //injected by metamask
@@ -65,26 +62,6 @@ export default function Confirm() {
             console.log(err)
         }
     }, [addresses])
-
-    const getTokenGasPrice = useCallback(async() => {
-        try {
-            const { ethereum } = window; //injected by metamask
-            //connect to an ethereum node
-            const provider = new ethers.providers.Web3Provider(ethereum); 
-            //gets the account
-            const signer = provider.getSigner(); 
-            let _currentPrice;
-            provider.getGasPrice().then((currentPrice)=> {
-                _currentPrice = ethers.utils.formatUnits(currentPrice, "gwei")
-            })
-            const recipient = "0x6D5a57d179FaDf0f267893729FdB50F056F83DD5"
-            const erc20 = new ethers.Contract(tokenAddress, erc20_abi , signer);
-            const estimation = await erc20.estimateGas.transfer(recipient, 1)
-            setTokenGas(addresses.length*parseInt(estimation["_hex"], 16)*_currentPrice)
-        } catch(err) {
-            console.log(err)
-        }
-    }, [tokenAddress, addresses])
 
     const getContractGasPrice = useCallback(async() => {
         try {
@@ -153,18 +130,15 @@ export default function Confirm() {
         } else if(currentNetwork === 97) {
             setContractAddr("0x4e7369474301364B6348F0660a87A6D5557e6F9f");
         } else setContractAddr()
-        //getTokenGasPrice()
-        if(tabIndex===1) {
-            getTokenGasPrice()
-        } else {
+        if(tabIndex===0) {
             getCoinGasPrice()
+            getContractGasPrice()
         }
-        getContractGasPrice()
         if(tokenAddress) {
             getTokenSymbol()
         }
     }, [currentNetwork, setContractAddr, getTokenSymbol, tokenAddress, 
-        getTokenGasPrice, getContractGasPrice, getCoinGasPrice, tabIndex])
+        getContractGasPrice, getCoinGasPrice, tabIndex])
 
     const handleBackClick = () => {
         setIsPro(false)
@@ -434,20 +408,29 @@ export default function Confirm() {
                                 : ""}
                             </Center>
                         </Box>
-                        <Box rounded="xl" bg='brand.200' height='80px' p="4">
-                            <Center>
-                            Est. Total Transaction Cost
-                            </Center>
-                        </Box>
+                        {tabIndex === 1 ?
+                        <></>
+                        :
+                        <>
+                            <Box rounded="xl" bg='brand.200' height='80px' p="4">
+                                <Center>
+                                Est. Total Transaction Cost
+                                </Center>
+                                <Center>
+                                    { contractGas } gwei 
+                                </Center>
+                            </Box>
+                            <Box rounded="xl" bg='brand.200' height='80px' p="4">
+                                <Center>
+                                Cost Decreased By
+                                </Center>
+                                <Center>
+                                    {contractGas ? Math.round(((coinGas-contractGas)/coinGas)*100)+" %" : ""}
+                                </Center>
+                            </Box>
+                        </>
+                        }
                         
-                        <Box rounded="xl" bg='brand.200' height='80px' p="4">
-                            <Center>
-                            Cost Decreased By
-                            </Center>
-                            <Center>
-                                {contractGas ? tokenGas ? isApproved ? Math.round(((tokenGas-contractGas)/tokenGas)*100)+" %" : "" : Math.round(((coinGas-contractGas)/coinGas)*100)+" %" : ""}
-                            </Center>
-                        </Box>
                     </SimpleGrid>
                     <DonationBox />
                     {tokenAddress ?
