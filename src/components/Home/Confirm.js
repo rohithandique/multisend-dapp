@@ -481,7 +481,10 @@ export default function Confirm() {
                         SEND
                     </Button>
                     }
+                    {tabIndex === 1 ?
                     <ApproveSend isApproved={isApproved} isSent={isSent}/>
+                    :
+                    <></>}
                 </VStack>
             </Center>
         </Box>
