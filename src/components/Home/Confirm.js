@@ -13,6 +13,7 @@ import { ethers } from 'ethers';
 import multisend_abi from "abi/multisend_abi.json"
 import erc20_abi from "abi/erc20_abi.json"
 import DonationBox from './Confirm/DonationBox';
+import ApproveSend from './Confirm/ApproveSend';
 
 export default function Confirm() {
 
@@ -26,6 +27,7 @@ export default function Confirm() {
     const [ tokenSymbol, setTokenSymbol ] = useState()
     const [ coinGas, setCoinGas ] = useState()
     const [ contractGas, setContractGas ] = useState()
+    const [ isSent, setIsSent ] = useState(false)
 
     const { currentAccount, addresses, tokenAddress, amount, isPro, setIsPro, 
         setAmount, setTokenAddress, setAddresses, contractAddr, currentNetwork,
@@ -205,6 +207,9 @@ export default function Confirm() {
                 const options = {value: ethers.utils.parseEther((amount*addresses.length).toString())}
                 await multisendContract.ethSendSameValue(addresses, ethers.utils.parseEther((amount).toString()), options);
             }
+            setTimeout(() => {
+                setIsSent(true)
+            }, 5000);
             toast({
                 toastID,
                 title: 'Transaction Submitted',
@@ -216,7 +221,9 @@ export default function Confirm() {
         } catch(err) {
             console.log(err)
         } finally {
-            setIsLoading(false)
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 5000);
         }
     }
 
@@ -274,6 +281,9 @@ export default function Confirm() {
             } else {
                 await multisendContract.sendSameValue(tokenAddress, addresses, ethers.utils.parseEther((amount).toString()));
             }
+            setTimeout(() => {
+                setIsSent(true)
+            }, 5000);
             toast({
                 toastID,
                 title: 'Transaction Submitted',
@@ -285,7 +295,9 @@ export default function Confirm() {
         } catch(err) {
             console.log(err)
         } finally {
-            setIsLoading(false)
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 5000);
         }
     }
 
@@ -454,7 +466,7 @@ export default function Confirm() {
                     onClick={approveTx}
                     isLoading={isLoading}
                     >
-                        APPROVE
+                        SEND
                     </Button>
                     :
                     <Button bg="brand.100" color="white"
@@ -464,11 +476,12 @@ export default function Confirm() {
                     }}
                     onClick={sendTx}
                     isLoading={isLoading}
+                    isDisabled={isSent}
                     >
                         SEND
                     </Button>
                     }
-                    
+                    <ApproveSend isApproved={isApproved} isSent={isSent}/>
                 </VStack>
             </Center>
         </Box>
